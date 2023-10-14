@@ -11,5 +11,6 @@ async fn main() {
 }
 
 async fn root() -> &'static str {
+  dbg!("what's up");
   "Hello Kitty"
 }
