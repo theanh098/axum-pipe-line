@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  name     String @db.VarChar(26)
+  password String @db.VarChar
+  nfts     NFT[]
+
+  @@map("user")
+}
+
+model Collection {
+  id          Int     @id @default(autoincrement())
+  slug        String  @unique
+  name        String
+  image_url   String? @db.VarChar
+  description String? @db.VarChar
+  nfts        NFT[]
+
+  @@map("collection")
+}
+
+model NFT {
+  id                    Int        @id @default(autoincrement())
+  token_id              String     @db.VarChar
+  token_address         String     @db.VarChar
+  name                  String     @db.VarChar
+  image_url             String     @db.VarChar
+  original_url          String     @db.VarChar
+  end_date              DateTime   @db.Timestamp(6)
+  block_number          Int        @default(0)
+  description           String?    @db.VarChar
+  thumbnail_url         String?    @db.VarChar
+  is_active             Boolean    @default(false)
+  square_price          Float      @default(0)
+  position              Int        @default(0)
+  last_position         Int        @default(0)
+  position_within_block Int        @default(0)
+  last_crawl_date       DateTime   @default(now()) @db.Timestamp(6)
+  collection_id         Int
+  user_id               Int
+  user                  User       @relation(fields: [user_id], references: [id])
+  collection            Collection @relation(fields: [collection_id], references: [id])
+
+  @@map("nft")
+}

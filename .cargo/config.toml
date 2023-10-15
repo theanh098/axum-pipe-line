@@ -1,0 +1,2 @@
+[alias]
+system-start = "run -p system --release"

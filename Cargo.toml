@@ -1,10 +1,15 @@
 [package]
-name = "axum-pipe-line"
+name = "nft-adc-platform"
 version = "0.1.0"
 edition = "2021"
+authors = ["theanh098"]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[workspace]
+members = ["system","server"]
+
+[package.metadata.commands]
+sea-gen = "sea generate entity -o server/src/shared/database/entities --with-serde both"
 
 [dependencies]
-axum = "0.6.20"
 tokio = { version = "1.33.0", features = ["full"] }
+server = { path = "./server" }
