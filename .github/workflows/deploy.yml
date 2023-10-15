@@ -30,5 +30,6 @@ jobs:
           host: ${{ secrets.INSTANCE_HOST }}
           username: ${{ secrets.INSTANCE_USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
-          source: 'target/release/nft-adc-platform,tagget/release/system'
-          target: ~/axum-pipe-line
+          source: 'target/release/nft-adc-platform,target/release/system'
+          target: ~/nft-app
+          strip_components: 2
