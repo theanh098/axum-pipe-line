@@ -22,7 +22,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release
+          args: --release --workspace
 
       - name: Upload bin
         uses: appleboy/scp-action@v0.1.4
