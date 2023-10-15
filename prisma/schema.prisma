@@ -7,11 +7,10 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  name     String @db.VarChar(26)
-  password String @db.VarChar
-  nfts     NFT[]
-
+  id         Int      @id @default(autoincrement())
+  address    String   @unique @db.Char(42)
+  is_admin   Boolean  @default(false)
+  nfts       NFT[]
   @@map("user")
 }
 

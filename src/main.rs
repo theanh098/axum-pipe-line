@@ -1,4 +1,3 @@
-#[tokio::main]
-async fn main() {
-  server::bootstrap().await;
+fn main() {
+  server::start();
 }

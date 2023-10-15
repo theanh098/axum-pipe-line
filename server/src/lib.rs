@@ -1,10 +1,17 @@
 use axum::{routing::get, Router};
 
+mod errors;
+mod extract;
 mod handlers;
 mod shared;
 
-pub async fn bootstrap() {
-  let app = Router::new().route("/", get(root));
+use extract::state::AppState;
+
+#[tokio::main]
+pub async fn start() {
+  let app = Router::new()
+    .route("/", get(root))
+    .with_state(AppState::new("afs").await.unwrap());
 
   axum::Server::bind(&"0.0.0.0:8080".parse().unwrap())
     .serve(app.into_make_service())

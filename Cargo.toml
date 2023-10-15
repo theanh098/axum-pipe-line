@@ -11,5 +11,4 @@ members = ["system","server"]
 sea-gen = "sea generate entity -o server/src/shared/database/entities --with-serde both"
 
 [dependencies]
-tokio = { version = "1.33.0", features = ["full"] }
 server = { path = "./server" }
