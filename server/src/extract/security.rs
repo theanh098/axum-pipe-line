@@ -7,18 +7,19 @@ use axum::{
 };
 use chrono::Utc;
 use jsonwebtoken::errors::ErrorKind;
-use jsonwebtoken::{encode, DecodingKey, EncodingKey, Header, Validation};
+use jsonwebtoken::{DecodingKey, Validation};
 
-use crate::errors::AppError;
+use crate::{errors::AppError, shared::database::entities::user};
 use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct Claims {
   pub exp: u32,
   pub id: i32,
   pub address: String,
   pub is_admin: bool,
 }
+
 pub struct Guard(pub Claims);
 
 #[async_trait]
@@ -47,5 +48,16 @@ where
         })
         .map(|token_data| Self(token_data.claims))
       })
+  }
+}
+
+impl Claims {
+  pub fn new(user: &user::Model, expired: chrono::Duration) -> Self {
+    Self {
+      address: user.address.to_owned(),
+      id: user.id,
+      is_admin: user.is_admin,
+      exp: Utc::now().checked_add_signed(expired).unwrap().timestamp() as u32,
+    }
   }
 }

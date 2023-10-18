@@ -1,9 +1,14 @@
-use axum::{routing::get, Router};
+use axum::{
+  extract::State,
+  routing::{get, post},
+  Router,
+};
 
-mod errors;
+pub mod errors;
+pub mod shared;
+
 mod extract;
 mod handlers;
-mod shared;
 
 use extract::state::AppState;
 
@@ -11,6 +16,7 @@ use extract::state::AppState;
 pub async fn start() {
   let app = Router::new()
     .route("/", get(root))
+    .route("/auth", post(handlers::sign_in))
     .with_state(AppState::new("afs").await.unwrap());
 
   axum::Server::bind(&"0.0.0.0:8080".parse().unwrap())
@@ -19,7 +25,7 @@ pub async fn start() {
     .unwrap();
 }
 
-async fn root() -> &'static str {
+async fn root(_state: State<AppState>) -> &'static str {
   dbg!("what's up");
   "Hello Kitty"
 }

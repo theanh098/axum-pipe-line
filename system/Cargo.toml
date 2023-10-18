@@ -7,3 +7,8 @@ edition = "2021"
 
 [dependencies]
 server = { path = "../server" }
+image = "0.24.7"
+surf = { version = "2.3.2", features = ["hyper-client"] }
+tokio = { version = "1.33.0", features = ["full"] }
+sea-orm = { version = "0.12.3", features = ["sqlx-postgres","runtime-tokio-native-tls","macros"] }
+futures = "0.3.28"

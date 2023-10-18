@@ -7,6 +7,7 @@ use axum::{
 };
 use sea_orm::DbErr;
 
+#[derive(Debug)]
 pub enum AppError {
   ExecutionError(ErrorTag, anyhow::Error),
   RecordNotFoundError {
@@ -15,6 +16,7 @@ pub enum AppError {
     value: &'static str,
   },
   AuthenticationError(&'static str),
+  SurfError(String),
 }
 
 impl IntoResponse for AppError {
@@ -40,6 +42,12 @@ impl IntoResponse for AppError {
       AuthenticationError(reason) => (
         StatusCode::UNAUTHORIZED,
         specific_err("UnAuthorized", reason),
+      )
+        .into_response(),
+
+      SurfError(reason) => (
+        StatusCode::INTERNAL_SERVER_ERROR,
+        specific_err("SurfError", reason),
       )
         .into_response(),
     }

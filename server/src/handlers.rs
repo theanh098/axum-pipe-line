@@ -5,5 +5,6 @@ mod get_nft;
 mod get_nfts;
 mod get_user;
 mod parse_nft;
+mod sign_in;
 
-pub use edit_nft::CMM;
+pub use sign_in::handler as sign_in;
