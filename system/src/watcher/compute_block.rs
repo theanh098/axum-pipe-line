@@ -8,24 +8,20 @@ use std::io::Cursor;
 
 type ImageBuf = Vec<u8>;
 
-async fn img_url_to_buffer(url: impl Into<String>) -> ImageBuf {
-  let mut response = surf::get(url.into()).await.unwrap();
+async fn img_url_to_buffer(url: impl Into<String>) -> Result<ImageBuf, surf::Error> {
+  let mut response = surf::get(url.into()).await?;
 
-  let img_bytes = response.body_bytes().await.unwrap();
+  let img_bytes = response.body_bytes().await?;
 
   let dynamic_image = ImageReader::new(Cursor::new(img_bytes))
-    .with_guessed_format()
-    .unwrap()
-    .decode()
-    .unwrap();
+    .with_guessed_format()?
+    .decode()?;
 
   let mut bytes: ImageBuf = Vec::new();
 
-  dynamic_image
-    .write_to(&mut Cursor::new(&mut bytes), image::ImageOutputFormat::Png)
-    .unwrap();
+  dynamic_image.write_to(&mut Cursor::new(&mut bytes), image::ImageOutputFormat::Png)?;
 
-  bytes
+  Ok(bytes)
 }
 
 fn get_position_range_on_block(block: u32) -> (u32, u32) {
@@ -48,34 +44,31 @@ async fn generate_block(block: u32, db_conn: &DatabaseConnection) -> Result<(), 
       .map(|nfts| {
         nfts
           .into_iter()
-          .map(|nft| tokio::spawn(async { img_url_to_buffer(nft.image_url).await }))
+          .map(|nft| tokio::spawn(async { img_url_to_buffer(nft.image_url).await.unwrap() }))
       })?,
   )
   .await
   .into_iter()
   .enumerate()
   .for_each(|(idx, join_result)| {
-    join_result
-      .map(|buffer| {
-        let child_image = image::load_from_memory(&buffer).unwrap().resize_exact(
-          child_image_size as u32,
-          child_image_size as u32,
-          image::imageops::FilterType::Lanczos3,
-        );
+    let _ = join_result.map(|buffer| {
+      let child_image = image::load_from_memory(&buffer).unwrap().resize_exact(
+        child_image_size as u32,
+        child_image_size as u32,
+        image::imageops::FilterType::Lanczos3,
+      );
 
-        let x: u32 = ((idx as u32) % block) * (BLOCK_SIZE / block);
-        let y: u32 = ((idx as u32) / block) * (BLOCK_SIZE / block);
+      let x: u32 = ((idx as u32) % block) * (BLOCK_SIZE / block);
+      let y: u32 = ((idx as u32) / block) * (BLOCK_SIZE / block);
 
-        image_block
-          .copy_from(&child_image, x, y)
-          .unwrap_or_else(|e| eprintln!("#71>>e: {}", e));
-      })
-      .unwrap_or_else(|e| eprintln!("#73>>e: {}", e));
+      let _ = image_block.copy_from(&child_image, x, y);
+    });
   });
 
   image_block
     .save(format!(
-      "/home/theanh098/rust-lang/axum-pipe-line/system/images/block_{block}.png"
+      "{}/images/block_{block}.png",
+      std::env::current_dir().unwrap().to_str().unwrap()
     ))
     .map_err(|err| err.into())
 }

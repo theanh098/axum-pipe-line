@@ -977,6 +977,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "cron"
+version = "0.12.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1ff76b51e4c068c52bfd2866e1567bee7c567ae8f24ada09fd4307019e25eab7"
+dependencies = [
+ "chrono",
+ "nom",
+ "once_cell",
+]
+
+[[package]]
 name = "crossbeam-deque"
 version = "0.8.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1260,6 +1271,12 @@ name = "discard"
 version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "212d0f5754cb6769937f4501cc0e67f4f4483c8d2c3e1e922ee9edbe4ab4c7c0"
+
+[[package]]
+name = "dotenv"
+version = "0.15.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "77c90badedccf4105eca100756a0b1289e191f6fcbdadd3cee1d2f614f97da8f"
 
 [[package]]
 name = "dotenvy"
@@ -4569,6 +4586,7 @@ dependencies = [
  "bcrypt",
  "chrono",
  "deadpool-redis",
+ "dotenv",
  "ethers",
  "futures",
  "jsonwebtoken 9.0.0",
@@ -5228,10 +5246,16 @@ checksum = "2047c6ded9c721764247e62cd3b03c09ffc529b2ba5b10ec482ae507a4a70160"
 name = "system"
 version = "0.1.0"
 dependencies = [
+ "chrono",
+ "cron",
+ "dotenv",
  "futures",
  "image",
  "sea-orm",
+ "serde",
+ "serde_json",
  "server",
+ "sqlx",
  "surf",
  "tokio 1.33.0",
 ]
