@@ -1,9 +1,9 @@
 use sea_orm::{ConnectionTrait, DatabaseConnection, DbErr, Statement};
 
 pub async fn update_nfts_position(db: &DatabaseConnection) -> Result<(), DbErr> {
-  db.execute(Statement::from_sql_and_values(
-    sea_orm::DatabaseBackend::Postgres,
-    r#"
+    db.execute(Statement::from_sql_and_values(
+        sea_orm::DatabaseBackend::Postgres,
+        r#"
       WITH nft_ext AS (
         SELECT
         "nft"."id",
@@ -24,8 +24,8 @@ pub async fn update_nfts_position(db: &DatabaseConnection) -> Result<(), DbErr> 
         )
       WHERE is_active = true
     "#,
-    [1.into()],
-  ))
-  .await
-  .map(|_| ())
+        [1.into()],
+    ))
+    .await
+    .map(|_| ())
 }

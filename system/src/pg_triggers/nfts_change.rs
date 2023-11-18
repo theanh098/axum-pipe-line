@@ -1,10 +1,10 @@
 use sea_orm::{ConnectionTrait, DatabaseConnection, DbErr, ExecResult, Statement};
 
 pub async fn create_nfts_change_event(db_con: &DatabaseConnection) -> Result<ExecResult, DbErr> {
-  db_con
-    .execute(Statement::from_sql_and_values(
-      sea_orm::DatabaseBackend::Postgres,
-      r#"
+    db_con
+        .execute(Statement::from_sql_and_values(
+            sea_orm::DatabaseBackend::Postgres,
+            r#"
             CREATE OR REPLACE FUNCTION nfts_change_listener()
             RETURNS TRIGGER AS $$
             BEGIN
@@ -17,14 +17,14 @@ pub async fn create_nfts_change_event(db_con: &DatabaseConnection) -> Result<Exe
             END;
             $$ LANGUAGE plpgsql;
         "#,
-      [],
-    ))
-    .await?;
+            [],
+        ))
+        .await?;
 
-  db_con
-    .execute(Statement::from_sql_and_values(
-      sea_orm::DatabaseBackend::Postgres,
-      r#"
+    db_con
+        .execute(Statement::from_sql_and_values(
+            sea_orm::DatabaseBackend::Postgres,
+            r#"
             CREATE OR REPLACE TRIGGER nfts_change 
             AFTER 
                 INSERT 
@@ -34,7 +34,7 @@ pub async fn create_nfts_change_event(db_con: &DatabaseConnection) -> Result<Exe
             FOR EACH ROW 
             EXECUTE PROCEDURE nfts_change_listener();
         "#,
-      [],
-    ))
-    .await
+            [],
+        ))
+        .await
 }
