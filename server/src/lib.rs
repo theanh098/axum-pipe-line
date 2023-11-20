@@ -29,6 +29,5 @@ pub async fn start() {
 }
 
 async fn root(_state: State<AppState>) -> &'static str {
-    dbg!("what's up");
     "Hello Kitty"
 }
