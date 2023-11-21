@@ -10,6 +10,7 @@ pub mod shared;
 mod extract;
 mod handlers;
 
+use chrono::Utc;
 use extract::state::AppState;
 
 #[tokio::main]
@@ -22,14 +23,15 @@ pub async fn start() {
         .route("/auth", post(handlers::sign_in))
         .with_state(AppState::new(&db_url).await.unwrap());
 
+    println!("server is listening on port 8080");
+
     axum::Server::bind(&"0.0.0.0:8080".parse().unwrap())
         .serve(app.into_make_service())
         .await
         .unwrap();
-
-    println!("server is listening on port 8080")
 }
 
 async fn root(_state: State<AppState>) -> &'static str {
+    println!("Time: {}", Utc::now());
     "Hello Kitty"
 }
