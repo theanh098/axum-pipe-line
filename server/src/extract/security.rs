@@ -37,7 +37,7 @@ where
             .await
             .map_err(|_| AppError::AuthenticationError("Missing Authorization"))?;
 
-        let claims = jsonwebtoken::decode::<Claims>(
+        jsonwebtoken::decode::<Claims>(
             bearer.token(),
             &DecodingKey::from_secret(access_secret.as_bytes()),
             &Validation::default(),
@@ -46,9 +46,7 @@ where
             ErrorKind::ExpiredSignature => AppError::AuthenticationError("Expired token"),
             _ => AppError::AuthenticationError("Invalid token"),
         })
-        .map(|token_data| token_data.claims)?;
-
-        Ok(Self(claims))
+        .map(|token_data| Self(token_data.claims))
     }
 }
 

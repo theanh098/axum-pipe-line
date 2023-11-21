@@ -26,6 +26,8 @@ pub async fn start() {
         .serve(app.into_make_service())
         .await
         .unwrap();
+
+    println!("server is listening on port 8080")
 }
 
 async fn root(_state: State<AppState>) -> &'static str {
