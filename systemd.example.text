@@ -1,0 +1,13 @@
+#! /etc/systemd/system/axum-pipe-line.service
+
+[Unit]
+Description=Axum TCP listener server
+
+[Service]
+WorkingDirectory=/home/ubuntu/nft-app
+ExecStart=/home/ubuntu/nft-app/start.sh
+StandardOutput=append:/home/ubuntu/log/nft-app/info.log
+StandardError=append:/home/ubuntu/log/nft-app/error.log
+
+[Install]
+WantedBy=multi-user.target
